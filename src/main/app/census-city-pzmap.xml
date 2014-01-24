@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!-- DTD can be pulled from the Jar or over the web-->
+<!DOCTYPE PZMAP SYSTEM	"flatpack.dtd" >
+<!--<!DOCTYPE PZMAP SYSTEM	"http://flatpack.sourceforge.net/flatpack.dtd" >-->
+<PZMAP>
+	<COLUMN name="Topic" />
+	<COLUMN name="Characteristic" />
+	<COLUMN name="Note" />
+	<COLUMN name="Total" />
+	<COLUMN name="Flag_Total" />
+	<COLUMN name="Male" />
+	<COLUMN name="Flag_Male" />
+	<COLUMN name="Female" />
+	<COLUMN name="Flag_Female" />
+	<!--COLUMN name="Total" />
+	<COLUMN name="Flag_Total" />
+	<COLUMN name="Male" />
+	<COLUMN name="Flag_Male" />
+	<COLUMN name="Female" />
+	<COLUMN name="Flag_Female" /-->
+	
+
+
+</PZMAP> 

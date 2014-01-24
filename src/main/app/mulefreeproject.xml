@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jersey="http://www.mulesoft.org/schema/mule/jersey" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:jdbc-ee="http://www.mulesoft.org/schema/mule/ee/jdbc" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ajax="http://www.mulesoft.org/schema/mule/ajax" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.4.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/ajax http://www.mulesoft.org/schema/mule/ajax/current/mule-ajax.xsd
+http://www.mulesoft.org/schema/mule/ee/jdbc http://www.mulesoft.org/schema/mule/ee/jdbc/current/mule-jdbc-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/2.0/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/jersey http://www.mulesoft.org/schema/mule/jersey/current/mule-jersey.xsd">
+    <mongo:config name="Mongo_DB" username="census_test" password="passwd1" database="census_sample" host="ds027769.mongolab.com" port="27769" doc:name="Mongo DB">
+        <mongo:connection-pooling-profile initialisationPolicy="INITIALISE_ONE" exhaustedAction="WHEN_EXHAUSTED_GROW"/>
+    </mongo:config>
+    <spring:beans>
+        <spring:bean id="myDbObject" class="com.mongodb.BasicDBObject"/>
+    </spring:beans>
+    <flow name="StaticContent" doc:name="StaticContent">
+	    <http:inbound-endpoint address="http://localhost:8082/static" doc:name="HTTP" exchange-pattern="request-response"/>
+	    <http:static-resource-handler resourceBase="${app.home}/docroot"
+	        defaultFile="index.html" doc:name="HTTP Static Resource Handler"/>
+	</flow>
+    <flow name="DataServiceFlow" doc:name="DataServiceFlow">
+        <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8082"  doc:name="HTTP"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <scripting:transformer doc:name="extract path params">
+            <scripting:script engine="Groovy"><![CDATA[requestPath = message.getInboundProperty('http.request.path')
+requestPath = java.net.URLDecoder.decode(requestPath)
+pathParts = requestPath.replaceFirst("/","").split("/")
+topic1 = pathParts[1].replaceAll("-"," ")
+city = pathParts[0]
+message.addProperties(['topic': topic1.substring(0, 1).toUpperCase() + topic1.substring(1)], org.mule.api.transport.PropertyScope.OUTBOUND);
+message.addProperties(['city': city], org.mule.api.transport.PropertyScope.OUTBOUND);
+return payload]]></scripting:script>
+        </scripting:transformer>
+        <mongo:find-objects-using-query-map config-ref="Mongo_DB" collection="#[message.outboundProperties['city']]" doc:name="find city data by topic">
+            <mongo:query-attributes>
+                <mongo:query-attribute key="Topic">#[message.outboundProperties['topic']]</mongo:query-attribute>
+                
+            </mongo:query-attributes>
+        </mongo:find-objects-using-query-map>
+        <mongo:mongo-collection-to-json doc:name="to json"/>
+        <set-payload value="#[payload]" doc:name="to payload"/>
+    </flow>
+    <flow name="CensusProcessingFlow" doc:name="CensusProcessingFlow">
+        <file:inbound-endpoint path="C:\census_sanitized" responseTimeout="10000" doc:name="File">
+            <file:filename-regex-filter pattern=".*csv" caseSensitive="false"/>
+        </file:inbound-endpoint>
+        <logger message="processing..." level="INFO" doc:name="Logger"/>
+        <scripting:transformer doc:name="extract city name">
+            <scripting:script engine="Groovy"><![CDATA[fileName = message.getInboundProperty('originalFilename')
+collectionName = fileName.replaceAll("_.*","").toLowerCase()
+message.addProperties(['collectionName': collectionName], org.mule.api.transport.PropertyScope.OUTBOUND);
+return payload]]></scripting:script>
+        </scripting:transformer>
+        <mongo:drop-collection config-ref="Mongo_DB" collection="#[message.outboundProperties['collectionName']]" doc:name="DropCollection"/>
+        <mongo:create-collection config-ref="Mongo_DB" collection="#[message.outboundProperties['collectionName']]" doc:name="CreateCollection"/>
+        <jdbc-ee:csv-to-maps-transformer delimiter="," mappingFile="${app.home}/census-city-pzmap.xml" doc:name="CSV to Maps" ignoreFirstRecord="true"/>
+        <collection-splitter doc:name="Collection Splitter"/>
+        <json:object-to-json-transformer doc:name="to JSON"/>
+        <mongo:json-to-dbobject doc:name="to db object"/>
+        <logger message="Message #[message.payload['Characteristic']]" level="INFO" doc:name="Logger"/>
+        <mongo:insert-object config-ref="Mongo_DB" collection="#[message.outboundProperties['collectionName']]" doc:name="insert record"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </flow>
+    <flow name="FileSanitizationFlow" doc:name="FileSanitizationFlow">
+        <file:inbound-endpoint path="c:\census" responseTimeout="10000" doc:name="File" moveToDirectory="c:\census_processed"  moveToPattern="#[header:originalFilename]" >
+            <file:filename-regex-filter pattern="Download.*csv" caseSensitive="false"/>
+        </file:inbound-endpoint>
+        <custom-transformer class="FileSanitizing" doc:name="Java"/>
+        <file:outbound-endpoint path="c:\census_sanitized" outputPattern="#[message.outboundProperties['City']]_census.csv" responseTimeout="10000" doc:name="File"/>
+    </flow>
+</mule>

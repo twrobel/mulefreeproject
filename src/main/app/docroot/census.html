@@ -1,0 +1,57 @@
+<html>
+  <head>
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      function drawChart(title, characteristic, data) {
+        var options = {
+          title: title,
+          vAxis: {title: characteristic,  titleTextStyle: {color: 'red'}}
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+        chart.draw(google.visualization.arrayToDataTable(data), options);
+      }
+      function updateChart() {
+  	    var city = $("#cityDropDown").val();
+  	  	var topic = $("#topicDropDown").val(); 
+  	    var cityName = $("#cityDropDown option:selected").text()
+  	  	var topicName = $("#topicDropDown option:selected").text()
+  	    $.getJSON("/" + city + "/" + topic, function(data,status){
+  	    	if(data.length == 0){
+  	    		document.getElementById('chart_div').innerHTML ="";
+  	    		return;
+  	    	}
+  	        var numbers = [['Characteristic', 'Total', 'Male', 'Female']]
+  	        for(var i=0; i< data.length; i++){
+  	      	  if(!data[i]['Characteristic'].match('^Total') && !data[i]['Characteristic'].match('^Median') && !data[i]['Characteristic'].match('^%')){
+  	  	    	  numbers[numbers.length] = [data[i]['Characteristic'], parseInt(data[i]['Total']), parseInt(data[i]['Male']), parseInt(data[i]['Female'])]
+  	      	  }
+  	        }
+  	        
+  	        drawChart(cityName + " - " + topicName, '', numbers);
+  	      });
+  	}
+    </script>
+    <script>
+$(document).ready(function(){
+	$('#cityDropDown').change(updateChart);
+	$('#topicDropDown').change(updateChart);
+});
+</script>
+  </head>
+  <body>
+    <select id="cityDropDown">
+	    <option value="calgary">Calgary</option>
+	    <option value="vancouver">Vancouver</option>
+	    <option value="montreal">Montreal</option>
+	    <option value="toronto">Toronto</option>
+	</select>
+	<select id="topicDropDown">
+	    <option value="age-characteristics">Age characteristics</option>
+	    <option value="marital-status">Marital status</option>
+	</select>
+    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+  </body>
+</html>
