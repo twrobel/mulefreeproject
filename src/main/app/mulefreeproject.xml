@@ -49,7 +49,7 @@ return payload]]></scripting:script>
         <set-payload value="#[payload]" doc:name="to payload"/>
     </flow>
     <flow name="CensusProcessingFlow" doc:name="CensusProcessingFlow">
-        <file:inbound-endpoint path="C:\census_sanitized" responseTimeout="10000" doc:name="File">
+        <file:inbound-endpoint path="C:\census_sanitized" responseTimeout="10000" doc:name="Sanitized census file">
             <file:filename-regex-filter pattern=".*csv" caseSensitive="false"/>
         </file:inbound-endpoint>
         <logger message="processing..." level="INFO" doc:name="Logger"/>
@@ -72,10 +72,10 @@ return payload]]></scripting:script>
         </catch-exception-strategy>
     </flow>
     <flow name="FileSanitizationFlow" doc:name="FileSanitizationFlow">
-        <file:inbound-endpoint path="c:\census" responseTimeout="10000" doc:name="File" moveToDirectory="c:\census_processed"  moveToPattern="#[header:originalFilename]" >
+        <file:inbound-endpoint path="c:\census" responseTimeout="10000" doc:name="City Census File" moveToDirectory="c:\census_processed"  moveToPattern="#[header:originalFilename]" >
             <file:filename-regex-filter pattern="Download.*csv" caseSensitive="false"/>
         </file:inbound-endpoint>
-        <custom-transformer class="FileSanitizing" doc:name="Java"/>
-        <file:outbound-endpoint path="c:\census_sanitized" outputPattern="#[message.outboundProperties['City']]_census.csv" responseTimeout="10000" doc:name="File"/>
+        <custom-transformer class="FileSanitizing" doc:name="sanitize"/>
+        <file:outbound-endpoint path="c:\census_sanitized" outputPattern="#[message.outboundProperties['City']]_census.csv" responseTimeout="10000" doc:name="Sanitised File"/>
     </flow>
 </mule>

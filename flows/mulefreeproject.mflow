@@ -18,8 +18,8 @@
             <property-collection name="@http://www.mulesoft.org/schema/mule/mongo/connection-pooling-profile;0">
                 <property name="exhaustedAction" value="WHEN_EXHAUSTED_GROW"/>
                 <property name="isProcessed$$$$ " value="true"/>
-                <property name="auxiliary;wrapIn" value="2"/>
                 <property name="auxiliary;index" value="2"/>
+                <property name="auxiliary;wrapIn" value="2"/>
                 <property name="initialisationPolicy" value="INITIALISE_ONE"/>
             </property-collection>
         </properties>
@@ -38,33 +38,26 @@
             <property name="lazy-init"/>
             <property name="auxiliary;wrappedIn" value="beans@spring@http://www.springframework.org/schema/beans"/>
             <property name="id" value="myDbObject"/>
-            <property name="primary"/>
             <property name="name"/>
+            <property name="primary"/>
             <property name="autowire"/>
             <property name="destroy-method"/>
-            <property name="auxiliary;index" value="4"/>
             <property name="auxiliary;wrapIn" value="3"/>
+            <property name="auxiliary;index" value="4"/>
             <property name="depends-on"/>
         </properties>
     </global-element>
-    <flow SubFlow="false" name="StaticContent" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="d32bef71-2e32-4272-9b8d-c4ced788749e">
+    <flow SubFlow="false" name="StaticContent" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="5c0c5fd3-61f1-4a56-9bb0-a6c428d78794">
         <properties>
-            <property name="processingStrategy2" value=""/>
-            <property name="initialState" value=""/>
-            <property name="auxiliary;erased;initialState" value="true"/>
-            <property name="bussinessEventsLabel" value=""/>
-            <property name="tracking:enable-default-events" value="false"/>
-            <property name="auxiliary;erased;processingStrategy2" value="true"/>
+            <property name="initialState"/>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+            <property name="bussinessEventsLabel"/>
+            <property name="tracking:enable-default-events"/>
             <property name="auxiliary;index" value="5"/>
-            <property name="updated"/>
-            <property-collection name="@http://www.mulesoft.org/schema/mule/ee/tracking/transaction;1105896633">
-                <property name="id" value=""/>
-                <property name="isProcessed$$$$ " value="true"/>
-            </property-collection>
         </properties>
-        <description></description>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#1">
-            <graphicalData x="14" y="31" width="314" height="171"/>
+            <graphicalData x="0" y="0" width="0" height="0"/>
             <endpoint direction="Inbound" message-exchange-pattern="RequestResponse" name="HTTP" type="http://www.mulesoft.org/schema/mule/http/endpoint" entity-id="HTTP#1">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
@@ -80,20 +73,19 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address" value="http://localhost:8082/static"/>
-                    <property name="encoding"/>
                     <property name="path"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="6"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
-                <description></description>
             </endpoint>
             <pattern name="HTTP Static Resource Handler" type="http://www.mulesoft.org/schema/mule/http/static-resource-handler" entity-id="HTTP Static Resource Handler#1">
                 <graphicalData x="0" y="0" width="0" height="0"/>
@@ -102,11 +94,10 @@
                     <property name="resourceBase" value="${app.home}/docroot"/>
                     <property name="auxiliary;index" value="7"/>
                 </properties>
-                <description></description>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="DataServiceFlow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="a0d0f903-faac-4610-a938-e42c86f65cd7">
+    <flow SubFlow="false" name="DataServiceFlow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="324f686d-737a-4ab8-ac47-e73909f6b9ac">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -132,20 +123,19 @@
                     <property name="exchange-pattern" value="request-response"/>
                     <property name="tracking:enable-default-events"/>
                     <property name="ref"/>
-                    <property name="httpLabel"/>
                     <property name="transformer-refs"/>
+                    <property name="httpLabel"/>
                     <property name="address"/>
-                    <property name="encoding"/>
                     <property name="path"/>
+                    <property name="encoding"/>
                     <property name="responseTransformer-refs"/>
                     <property name="method"/>
                     <property name="user"/>
-                    <property name="mimeType"/>
-                    <property name="responseTimeout"/>
                     <property name="auxiliary;index" value="9"/>
+                    <property name="responseTimeout"/>
+                    <property name="mimeType"/>
                     <property name="connector-ref"/>
                 </properties>
-                <description></description>
             </endpoint>
             <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#1">
                 <graphicalData x="0" y="0" width="0" height="0"/>
@@ -162,63 +152,61 @@
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
                     <property name="encoding"/>
-                    <property name="mimeType"/>
                     <property name="auxiliary;index" value="11"/>
+                    <property name="mimeType"/>
                     <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script;0">
                         <property name="text" value="requestPath = message.getInboundProperty('http.request.path')&#xA;requestPath = java.net.URLDecoder.decode(requestPath)&#xA;pathParts = requestPath.replaceFirst(&quot;/&quot;,&quot;&quot;).split(&quot;/&quot;)&#xA;topic1 = pathParts[1].replaceAll(&quot;-&quot;,&quot; &quot;)&#xA;city = pathParts[0]&#xA;message.addProperties(['topic': topic1.substring(0, 1).toUpperCase() + topic1.substring(1)], org.mule.api.transport.PropertyScope.OUTBOUND);&#xA;message.addProperties(['city': city], org.mule.api.transport.PropertyScope.OUTBOUND);&#xA;return payload"/>
                         <property name="engine" value="Groovy"/>
                         <property name="isProcessed$$$$ " value="true"/>
-                        <property name="auxiliary;wrapIn" value="12"/>
                         <property name="auxiliary;index" value="12"/>
+                        <property name="auxiliary;wrapIn" value="12"/>
                     </property-collection>
                     <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script-for-properties;0">
                         <property name="text" value="requestPath = message.getInboundProperty('http.request.path')&#xA;requestPath = java.net.URLDecoder.decode(requestPath)&#xA;pathParts = requestPath.replaceFirst(&quot;/&quot;,&quot;&quot;).split(&quot;/&quot;)&#xA;topic1 = pathParts[1].replaceAll(&quot;-&quot;,&quot; &quot;)&#xA;city = pathParts[0]&#xA;message.addProperties(['topic': topic1.substring(0, 1).toUpperCase() + topic1.substring(1)], org.mule.api.transport.PropertyScope.OUTBOUND);&#xA;message.addProperties(['city': city], org.mule.api.transport.PropertyScope.OUTBOUND);&#xA;return payload"/>
                         <property name="engine" value="Groovy"/>
                         <property name="isProcessed$$$$ " value="true"/>
-                        <property name="auxiliary;wrapIn" value="12"/>
                         <property name="auxiliary;index" value="12"/>
+                        <property name="auxiliary;wrapIn" value="12"/>
                     </property-collection>
                 </properties>
             </pattern>
             <pattern name="find city data by topic" type="http://www.mulesoft.org/schema/mule/mongo/mongo-connector" entity-id="Mongo DB#2">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="limit"/>
                     <property name=""/>
+                    <property name="limit"/>
                     <property name="username"/>
                     <property name="numToSkip"/>
                     <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/find-objects-using-query-map"/>
                     <property name="collection" value="#[message.outboundProperties['city']]"/>
-                    <property name="config-ref" value="Mongo_DB"/>
                     <property name="password"/>
-                    <property name="database"/>
+                    <property name="config-ref" value="Mongo_DB"/>
                     <property name="auxiliary;index" value="13"/>
+                    <property name="database"/>
                     <property-collection name="@http://www.mulesoft.org/schema/mule/mongo/find-objects-using-query-map-query-attributess;0">
                         <property name="isProcessed$$$$ " value="true"/>
-                        <property name="auxiliary;wrapIn" value="14"/>
                         <property name="auxiliary;index" value="14"/>
+                        <property name="auxiliary;wrapIn" value="14"/>
                         <property-collection name="@http://www.mulesoft.org/schema/mule/mongo/find-objects-using-query-map-query-attributes;1">
                             <property name="value" value="#[message.outboundProperties['topic']]"/>
                             <property name="isProcessed$$$$ " value="true"/>
-                            <property name="auxiliary;wrapIn" value="15"/>
-                            <property name="auxiliary;index" value="15"/>
                             <property name="key" value="Topic"/>
+                            <property name="auxiliary;index" value="15"/>
+                            <property name="auxiliary;wrapIn" value="15"/>
                         </property-collection>
                     </property-collection>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="to json" type="http://www.mulesoft.org/schema/mule/mongo/mongo-transformer" entity-id="Mongo DB#3">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/mongo-collection-to-json"/>
                     <property name="encoding"/>
-                    <property name="mimeType"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/mongo-collection-to-json"/>
                     <property name="auxiliary;index" value="16"/>
+                    <property name="mimeType"/>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="to payload" type="http://www.mulesoft.org/schema/mule/core/set-payload" entity-id="Set Payload#1">
                 <graphicalData x="0" y="0" width="0" height="0"/>
@@ -226,11 +214,10 @@
                     <property name="value" value="#[payload]"/>
                     <property name="auxiliary;index" value="17"/>
                 </properties>
-                <description></description>
             </pattern>
         </lane>
     </flow>
-    <flow SubFlow="false" name="CensusProcessingFlow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="ade5a005-2abb-4569-b2d8-050dc6dabaf7">
+    <flow SubFlow="false" name="CensusProcessingFlow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="05a49608-edcc-46cc-9176-5829e90ade1e">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
@@ -241,8 +228,8 @@
         </properties>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#3">
             <graphicalData x="0" y="0" width="0" height="0"/>
-            <endpoint direction="Inbound" message-exchange-pattern="OneWay" name="File" type="http://www.mulesoft.org/schema/mule/file/endpoint" entity-id="File#1">
-                <graphicalData x="21" y="526" width="68" height="69"/>
+            <endpoint direction="Inbound" message-exchange-pattern="OneWay" name="Sanitized census file" type="http://www.mulesoft.org/schema/mule/file/endpoint" entity-id="File#1">
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="reverseOrder"/>
                     <property name="moveToPattern"/>
@@ -257,24 +244,24 @@
                     <property name="moveToDirectory"/>
                     <property name="address"/>
                     <property name="fileAge"/>
-                    <property name="encoding"/>
                     <property name="path" value="C:\census_sanitized"/>
+                    <property name="encoding"/>
                     <property name="outputPattern"/>
-                    <property name="responseTimeout" value="10000"/>
-                    <property name="mimeType"/>
                     <property name="auxiliary;index" value="19"/>
+                    <property name="mimeType"/>
+                    <property name="responseTimeout" value="10000"/>
                     <property name="connector-ref"/>
                     <property-collection name="@http://www.mulesoft.org/schema/mule/file/filename-regex-filter;0">
                         <property name="pattern" value=".*csv"/>
                         <property name="caseSensitive" value="false"/>
                         <property name="isProcessed$$$$ " value="true"/>
-                        <property name="auxiliary;wrapIn" value="20"/>
                         <property name="auxiliary;index" value="20"/>
+                        <property name="auxiliary;wrapIn" value="20"/>
                     </property-collection>
                 </properties>
             </endpoint>
             <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#2">
-                <graphicalData x="149" y="526" width="68" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="message" value="processing..."/>
                     <property name="category"/>
@@ -283,39 +270,44 @@
                 </properties>
             </pattern>
             <pattern name="extract city name" type="http://www.mulesoft.org/schema/mule/scripting/groovyTransformer" entity-id="Groovy#2">
-                <graphicalData x="277" y="526" width="104" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="auxiliary;erased;mimeType" value="true"/>
-                    <property name="returnClass" value=""/>
-                    <property name="ignoreBadInput" value="false"/>
-                    <property name="updated"/>
-                    <property name="auxiliary;erased;encoding" value="true"/>
-                    <property name="encoding" value=""/>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
                     <property name="auxiliary;index" value="22"/>
-                    <property name="mimeType" value=""/>
-                    <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script;1167425043">
+                    <property name="mimeType"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script;0">
                         <property name="text" value="fileName = message.getInboundProperty('originalFilename')&#xA;collectionName = fileName.replaceAll(&quot;_.*&quot;,&quot;&quot;).toLowerCase()&#xA;message.addProperties(['collectionName': collectionName], org.mule.api.transport.PropertyScope.OUTBOUND);&#xA;return payload"/>
+                        <property name="engine" value="Groovy"/>
                         <property name="isProcessed$$$$ " value="true"/>
                         <property name="auxiliary;index" value="23"/>
+                        <property name="auxiliary;wrapIn" value="23"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/scripting/script-for-properties;0">
+                        <property name="text" value="fileName = message.getInboundProperty('originalFilename')&#xA;collectionName = fileName.replaceAll(&quot;_.*&quot;,&quot;&quot;).toLowerCase()&#xA;message.addProperties(['collectionName': collectionName], org.mule.api.transport.PropertyScope.OUTBOUND);&#xA;return payload"/>
+                        <property name="engine" value="Groovy"/>
+                        <property name="isProcessed$$$$ " value="true"/>
+                        <property name="auxiliary;index" value="23"/>
+                        <property name="auxiliary;wrapIn" value="23"/>
                     </property-collection>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="DropCollection" type="http://www.mulesoft.org/schema/mule/mongo/mongo-connector" entity-id="Mongo DB#4">
-                <graphicalData x="441" y="526" width="94" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name=""/>
                     <property name="username"/>
                     <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/drop-collection"/>
                     <property name="collection" value="#[message.outboundProperties['collectionName']]"/>
-                    <property name="config-ref" value="Mongo_DB"/>
                     <property name="password"/>
-                    <property name="database"/>
+                    <property name="config-ref" value="Mongo_DB"/>
                     <property name="auxiliary;index" value="24"/>
+                    <property name="database"/>
                 </properties>
             </pattern>
             <pattern name="CreateCollection" type="http://www.mulesoft.org/schema/mule/mongo/mongo-connector" entity-id="Mongo DB#5">
-                <graphicalData x="595" y="526" width="102" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name=""/>
                     <property name="capped"/>
@@ -323,100 +315,91 @@
                     <property name="maxObjects"/>
                     <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/create-collection"/>
                     <property name="collection" value="#[message.outboundProperties['collectionName']]"/>
-                    <property name="config-ref" value="Mongo_DB"/>
                     <property name="password"/>
-                    <property name="database"/>
+                    <property name="config-ref" value="Mongo_DB"/>
                     <property name="auxiliary;index" value="25"/>
+                    <property name="database"/>
                     <property name="size"/>
                 </properties>
             </pattern>
             <pattern name="CSV to Maps" type="http://www.mulesoft.org/schema/mule/ee/jdbc/csv-to-maps-transformer" entity-id="CSV to Maps#1">
-                <graphicalData x="757" y="526" width="81" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="auxiliary;erased;mimeType" value="true"/>
                     <property name="mappingFile" value="${app.home}/census-city-pzmap.xml"/>
                     <property name="delimiter" value=","/>
-                    <property name="returnClass" value=""/>
-                    <property name="ignoreBadInput" value="false"/>
-                    <property name="updated"/>
-                    <property name="auxiliary;erased;encoding" value="true"/>
-                    <property name="encoding" value=""/>
-                    <property name="qualifier" value=""/>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property name="qualifier"/>
                     <property name="ignoreFirstRecord" value="true"/>
-                    <property name="mimeType" value=""/>
                     <property name="auxiliary;index" value="26"/>
+                    <property name="mimeType"/>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="Collection Splitter" type="http://www.mulesoft.org/schema/mule/core/collection-splitter" entity-id="Collection Splitter#1">
-                <graphicalData x="898" y="526" width="108" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
-                    <property name="auxiliary;moved-from" value="29"/>
                     <property name="businessEventsLabel"/>
                     <property name="enableCorrelation"/>
+                    <property name="auxiliary;index" value="27"/>
                     <property name="tracking:enable-default-events"/>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="to JSON" type="http://www.mulesoft.org/schema/mule/json/object-to-json-transformer" entity-id="Object to JSON#1">
-                <graphicalData x="1066" y="526" width="94" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="sourceClass"/>
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
-                    <property name="auxiliary;moved-from" value="30"/>
                     <property name="encoding"/>
                     <property name="mapper-ref"/>
+                    <property name="auxiliary;index" value="28"/>
                     <property name="mimeType"/>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="to db object" type="http://www.mulesoft.org/schema/mule/mongo/mongo-transformer" entity-id="Mongo DB#6">
-                <graphicalData x="1220" y="526" width="71" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
-                    <property name="auxiliary;moved-from" value="31"/>
-                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/json-to-dbobject"/>
                     <property name="encoding"/>
+                    <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/json-to-dbobject"/>
+                    <property name="auxiliary;index" value="29"/>
                     <property name="mimeType"/>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#3">
-                <graphicalData x="1351" y="526" width="68" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="message" value="Message #[message.payload['Characteristic']]"/>
                     <property name="category"/>
                     <property name="level" value="INFO"/>
-                    <property name="auxiliary;moved-from" value="32"/>
+                    <property name="auxiliary;index" value="30"/>
                 </properties>
-                <description></description>
             </pattern>
             <pattern name="insert record" type="http://www.mulesoft.org/schema/mule/mongo/mongo-connector" entity-id="Mongo DB#7">
-                <graphicalData x="1479" y="526" width="80" height="69"/>
+                <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name=""/>
                     <property name="username"/>
-                    <property name="auxiliary;moved-from" value="33"/>
                     <property name="writeConcern"/>
                     <property name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute" value="http://www.mulesoft.org/schema/mule/mongo/insert-object"/>
                     <property name="collection" value="#[message.outboundProperties['collectionName']]"/>
                     <property name="dbObject-ref"/>
-                    <property name="config-ref" value="Mongo_DB"/>
                     <property name="password"/>
+                    <property name="config-ref" value="Mongo_DB"/>
+                    <property name="auxiliary;index" value="31"/>
                     <property name="database"/>
                 </properties>
-                <description></description>
             </pattern>
             <scope name="Catch Exception Strategy" type="http://www.mulesoft.org/schema/mule/core/catch-exception-strategy" entity-id="Catch Exception Strategy#1">
                 <properties>
                     <property name="labelConfigureConditionalExecutionUsingExpression"/>
                     <property name="when"/>
                     <property name="enableNotifications"/>
-                    <property name="auxiliary;index" value="34"/>
+                    <property name="auxiliary;index" value="32"/>
                 </properties>
-                <compartment entity-id="compartment#2">
+                <compartment entity-id="compartment#1">
                     <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#4">
                         <pattern name="Logger" type="http://www.mulesoft.org/schema/mule/core/logger" entity-id="Logger#4">
                             <graphicalData x="0" y="0" width="0" height="0"/>
@@ -424,7 +407,7 @@
 <property name="message"/>
 <property name="category"/>
 <property name="level" value="INFO"/>
-<property name="auxiliary;index" value="35"/>
+<property name="auxiliary;index" value="33"/>
                             </properties>
                         </pattern>
                     </lane>
@@ -432,18 +415,18 @@
             </scope>
         </lane>
     </flow>
-    <flow SubFlow="false" name="FileSanitizationFlow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="ad529d4b-cec6-4228-8821-d70c1285a9b2">
+    <flow SubFlow="false" name="FileSanitizationFlow" type="http://www.mulesoft.org/schema/mule/core/flow" entity-id="40d424a3-19a7-4f70-9820-f903a2bfd934">
         <properties>
             <property name="initialState"/>
             <property name="processingStrategy2"/>
             <property name="processingStrategy"/>
             <property name="bussinessEventsLabel"/>
             <property name="tracking:enable-default-events"/>
-            <property name="auxiliary;index" value="36"/>
+            <property name="auxiliary;index" value="34"/>
         </properties>
         <lane hadOnlyOneElement="false" index="0" isChoiceOtherwiseLane="false" entity-id="compartment-lane#5">
             <graphicalData x="0" y="0" width="0" height="0"/>
-            <endpoint direction="Inbound" message-exchange-pattern="OneWay" name="File" type="http://www.mulesoft.org/schema/mule/file/endpoint" entity-id="File#2">
+            <endpoint direction="Inbound" message-exchange-pattern="OneWay" name="City Census File" type="http://www.mulesoft.org/schema/mule/file/endpoint" entity-id="File#2">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="reverseOrder"/>
@@ -459,36 +442,34 @@
                     <property name="moveToDirectory" value="c:\census_processed"/>
                     <property name="address"/>
                     <property name="fileAge"/>
-                    <property name="encoding"/>
                     <property name="path" value="c:\census"/>
+                    <property name="encoding"/>
                     <property name="outputPattern"/>
-                    <property name="responseTimeout" value="10000"/>
+                    <property name="auxiliary;index" value="35"/>
                     <property name="mimeType"/>
-                    <property name="auxiliary;index" value="37"/>
+                    <property name="responseTimeout" value="10000"/>
                     <property name="connector-ref"/>
                     <property-collection name="@http://www.mulesoft.org/schema/mule/file/filename-regex-filter;0">
                         <property name="pattern" value="Download.*csv"/>
                         <property name="caseSensitive" value="false"/>
                         <property name="isProcessed$$$$ " value="true"/>
-                        <property name="auxiliary;wrapIn" value="38"/>
-                        <property name="auxiliary;index" value="38"/>
+                        <property name="auxiliary;index" value="36"/>
+                        <property name="auxiliary;wrapIn" value="36"/>
                     </property-collection>
                 </properties>
-                <description></description>
             </endpoint>
-            <pattern name="Java" type="org.mule.tooling.ui.modules.core.pattern.customTransformer" entity-id="Java#1">
+            <pattern name="sanitize" type="org.mule.tooling.ui.modules.core.pattern.customTransformer" entity-id="Java#1">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="returnClass"/>
                     <property name="ignoreBadInput"/>
                     <property name="encoding"/>
                     <property name="class" value="FileSanitizing"/>
+                    <property name="auxiliary;index" value="37"/>
                     <property name="mimeType"/>
-                    <property name="auxiliary;index" value="39"/>
                 </properties>
-                <description></description>
             </pattern>
-            <endpoint direction="Outbound" message-exchange-pattern="OneWay" name="File" type="http://www.mulesoft.org/schema/mule/file/endpoint" entity-id="File#3">
+            <endpoint direction="Outbound" message-exchange-pattern="OneWay" name="Sanitised File" type="http://www.mulesoft.org/schema/mule/file/endpoint" entity-id="File#3">
                 <graphicalData x="0" y="0" width="0" height="0"/>
                 <properties>
                     <property name="reverseOrder"/>
@@ -504,15 +485,14 @@
                     <property name="moveToDirectory"/>
                     <property name="address"/>
                     <property name="fileAge"/>
-                    <property name="encoding"/>
                     <property name="path" value="c:\census_sanitized"/>
+                    <property name="encoding"/>
                     <property name="outputPattern" value="#[message.outboundProperties['City']]_census.csv"/>
-                    <property name="responseTimeout" value="10000"/>
+                    <property name="auxiliary;index" value="38"/>
                     <property name="mimeType"/>
-                    <property name="auxiliary;index" value="40"/>
+                    <property name="responseTimeout" value="10000"/>
                     <property name="connector-ref"/>
                 </properties>
-                <description></description>
             </endpoint>
         </lane>
     </flow>
